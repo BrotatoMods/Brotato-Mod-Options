@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://resources/themes/base_theme.tres" type="Theme" id=1]
+[ext_resource path="res://mods-unpacked/dami-ModOptions/extensions/ui/menus/pages/menu_mods_options.gd" type="Script" id=2]
+[ext_resource path="res://ui/menus/global/my_menu_button.gd" type="Script" id=3]
+[ext_resource path="res://mods-unpacked/dami-ModOptions/extensions/ui/menus/pages/color_pickers_container.gd" type="Script" id=4]
+[ext_resource path="res://resources/fonts/actual/base/font_big_title.tres" type="DynamicFont" id=5]
+
+[node name="MenuModsOptions" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+custom_constants/separation = 20
+alignment = 1
+script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+margin_top = 6.0
+margin_right = 1920.0
+margin_bottom = 79.0
+custom_fonts/font = ExtResource( 5 )
+text = "MENU_MOD_CONFIG"
+align = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+margin_left = 200.0
+margin_top = 99.0
+margin_right = 1720.0
+margin_bottom = 969.0
+rect_min_size = Vector2( 1000, 870 )
+size_flags_horizontal = 4
+follow_focus = true
+scroll_horizontal_enabled = false
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+margin_right = 1520.0
+custom_constants/margin_right = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+margin_right = 1500.0
+rect_min_size = Vector2( 1500, 0 )
+size_flags_vertical = 3
+custom_constants/separation = 40
+
+[node name="EndSpace" type="Control" parent="ScrollContainer/MarginContainer/VBoxContainer"]
+margin_right = 1500.0
+size_flags_vertical = 3
+
+[node name="DefaultButton" type="Button" parent="."]
+visible = false
+margin_left = 686.0
+margin_top = 910.0
+margin_right = 1234.0
+margin_bottom = 975.0
+size_flags_horizontal = 4
+text = "MENU_RESET_TO_DEFAULT"
+script = ExtResource( 3 )
+
+[node name="BackButton" type="Button" parent="."]
+margin_left = 826.0
+margin_top = 989.0
+margin_right = 1093.0
+margin_bottom = 1054.0
+size_flags_horizontal = 4
+text = "MENU_BACK"
+script = ExtResource( 3 )
+
+[node name="ColorPickersContainer" type="Control" parent="."]
+margin_top = 1074.0
+margin_right = 1920.0
+margin_bottom = 1074.0
+script = ExtResource( 4 )
+
+[connection signal="pressed" from="DefaultButton" to="." method="_on_DefaultButton_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_BackButton_pressed"]
