@@ -1,7 +1,7 @@
 {
 	"name": "ModOptions",
 	"namespace": "dami",
-	"version_number": "0.3.1",
+	"version_number": "0.4.0",
 	"description": "Option menus for mods",
 	"website_url": "",
 	"dependencies": [],
@@ -9,10 +9,11 @@
 		"godot": {
 			"incompatibilities": [],
 			"authors": [
-				"dami"
+				"dami",
+				"Pasha"
 			],
 			"compatible_mod_loader_version": ["6.0.0"],
-			"compatible_game_version": ["0.8.0.3"],
+			"compatible_game_version": ["1.0.0.3"],
 			"config_defaults": {}
 		}
 	}

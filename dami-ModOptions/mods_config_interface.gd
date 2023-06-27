@@ -59,7 +59,7 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 			var default_number_value = 0.0
 			if value.has("default"):
 				default_number_value = value.default
-			result[key] = default_number_value			
+			result[key] = default_number_value
 			if value.has("maximum"):
 				result[key + "_max"] = value.maximum
 			if value.has("minimum"):
@@ -97,3 +97,9 @@ func is_color_string(setting_value:String) -> bool:
 			return true
 	
 	return false
+
+func get_settings(mod_name:String) -> Dictionary:
+	if mod_configs.has(mod_name):
+		return mod_configs[mod_name]
+	else:
+		return {}
