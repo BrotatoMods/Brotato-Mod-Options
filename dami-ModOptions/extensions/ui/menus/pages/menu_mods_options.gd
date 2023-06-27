@@ -21,7 +21,7 @@ func _ready():
 	for mod_config_key in mod_configs.keys():
 		_init_mod_config_ui(mod_configs[mod_config_key], mod_config_key)
 	
-	connect("setting_changed", ModsConfigInterface, "on_setting_changed")
+	connect("setting_changed", mods_config_interface, "on_setting_changed")
 	
 func init():
 	$BackButton.grab_focus()
