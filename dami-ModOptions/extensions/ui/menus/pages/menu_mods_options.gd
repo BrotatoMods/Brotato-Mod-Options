@@ -12,15 +12,11 @@ onready var color_pickers_container = $ColorPickersContainer
 onready var default_button = $DefaultButton
 onready var back_button = $BackButton
 
-const COLOR_HEX_EXPRESSION = "#?([a-fA-F0-9]{2}){3,4}"
-
-var color_regex := RegEx.new()
+var mods_config_interface
 
 func _ready():
-	var ModsConfigInterface = get_node("/root/ModLoader/dami-ModOptions/ModsConfigInterface")
-	var mod_configs = ModsConfigInterface.mod_configs
-
-	color_regex.compile(COLOR_HEX_EXPRESSION)
+	mods_config_interface = get_node("/root/ModLoader/dami-ModOptions/ModsConfigInterface")
+	var mod_configs = mods_config_interface.mod_configs
 	
 	for mod_config_key in mod_configs.keys():
 		_init_mod_config_ui(mod_configs[mod_config_key], mod_config_key)
@@ -63,7 +59,7 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 		elif config_value is bool:
 			_init_bool_button(mod_config_values_container, mod_name, config_key, config_value)
 		
-		elif config_value is String and check_color_string(config_value):
+		elif config_value is String and mods_config_interface.is_color_string(config_value):
 			_init_color_picker_button(mod_config_values_container, mod_name, config_key, config_value, color_pickers_container)
 
 
@@ -155,16 +151,3 @@ func _on_BackButton_pressed():
 
 func _on_DefaultButton_pressed():
 	pass # Replace with function body.
-
-
-func check_color_string(setting_value:String)->bool:
-	
-	var results = color_regex.search_all(setting_value)
-	
-	if results.size() > 0:
-		var result = results.pop_front().get_string()
-		if result == setting_value:
-			return true
-	
-	return false
-
