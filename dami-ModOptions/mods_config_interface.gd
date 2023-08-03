@@ -53,6 +53,9 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 	
 	for key in properties:
 		var value = properties[key]
+		if value.has("tooltip"):
+			result[key + "_tooltip"] = value.tooltip
+		
 		if value.type == "object":
 			result.merge(flatten_properties(value.properties))
 		elif value.type == "number":
@@ -72,7 +75,7 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 			if value.has("default"):
 				default_boolean = value.default
 			result[key] = default_boolean
-		
+			
 		elif value.type == "string":
 			if value.has("format") and value.format == "color":
 				var default_color = "#" + Color.white.to_html()

@@ -11,8 +11,11 @@ onready var color_pickers_container = $ColorPickersContainer
 
 onready var default_button = $DefaultButton
 onready var back_button = $BackButton
+onready var info_popup_container = $CanvasLayer
+onready var info_popup = $CanvasLayer / InfoPopup
 
 var mods_config_interface
+var components_hovered = 0
 
 func _ready():
 	mods_config_interface = get_node("/root/ModLoader/dami-ModOptions/ModsConfigInterface")
@@ -46,6 +49,7 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 	
 	for config_key in mod_config.keys():
 		var config_value = mod_config[config_key]
+		var component = null
 		
 		if config_value is float:
 			
@@ -54,14 +58,29 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 				and not config_key.ends_with("_min")
 				and not config_key.ends_with("_step")
 			):
-				_setup_float_slider(mod_config_values_container, mod_name, mod_config, config_key, config_value)
+				component = _setup_float_slider(mod_config_values_container, mod_name, mod_config, config_key, config_value)
 		
 		elif config_value is bool:
-			_init_bool_button(mod_config_values_container, mod_name, config_key, config_value)
+			component = _init_bool_button(mod_config_values_container, mod_name, config_key, config_value)
 		
 		elif config_value is String and mods_config_interface.is_color_string(config_value):
-			_init_color_picker_button(mod_config_values_container, mod_name, config_key, config_value, color_pickers_container)
+			component = _init_color_picker_button(mod_config_values_container, mod_name, config_key, config_value, color_pickers_container)
+				
+		if component and mod_config.keys().has(config_key + "_tooltip"):
+			component.connect("mouse_entered", self, "on_mouse_entered", [component, mod_config[config_key + "_tooltip"]])
+			component.connect("mouse_exited", self, "on_mouse_exited", [component])
 
+func on_mouse_entered(component, tooltip) -> void:
+	print_debug("entering ", components_hovered)
+	components_hovered += 1
+	info_popup_container.show()
+	info_popup.display(component, Text.text(tooltip))
+	
+func on_mouse_exited(component) -> void:
+	print_debug("exiting ", components_hovered)
+	components_hovered -= 1
+	if components_hovered == 0:
+		info_popup_container.hide()
 
 func _setup_float_slider(parent:Node, mod_name:String, mod_config:Dictionary, config_key:String, config_value:float):
 	var min_value = min(config_value, 0.0)
@@ -86,7 +105,7 @@ func _setup_float_slider(parent:Node, mod_name:String, mod_config:Dictionary, co
 	):
 		step = mod_config[config_key + "_step"]
 	
-	_init_float_slider(parent, config_value, min_value, max_value, step, config_key, mod_name)
+	return _init_float_slider(parent, config_value, min_value, max_value, step, config_key, mod_name)
 
 
 func _init_float_slider(
@@ -106,11 +125,16 @@ func _init_float_slider(
 	new_slider_option._slider.min_value = min_value
 	
 	new_slider_option._label.text = config_key.to_upper()
+	
+	print_debug("new slider value, text: ", new_slider_option._label.text)
+	
 	new_slider_option._value.rect_min_size.x = 140
 	
 	new_slider_option.set_value(current_value)
 	
 	new_slider_option.connect("value_changed", self, "signal_setting_changed", [config_key, mod_name])
+	
+	return new_slider_option
 
 
 func _init_bool_button(parent:Node, mod_name:String, config_key:String, config_value:bool):
@@ -121,6 +145,8 @@ func _init_bool_button(parent:Node, mod_name:String, config_key:String, config_v
 	new_bool_button.pressed = config_value
 	
 	new_bool_button.connect("toggled", self, "signal_setting_changed", [config_key, mod_name])
+	
+	return new_bool_button
 
 
 func _init_color_picker_button(
@@ -139,6 +165,8 @@ func _init_color_picker_button(
 	new_color_option.set_container(container)
 #
 	new_color_option.connect("color_changed", self, "signal_setting_changed", [config_key, mod_name])
+	
+	return new_color_option
 
 
 func signal_setting_changed(value, setting_name:String, mod_name:String):
