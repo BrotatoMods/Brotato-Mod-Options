@@ -137,15 +137,15 @@ func _init_float_slider(
 	
 	if format != "percent":
 		new_slider_option._slider.disconnect("value_changed", new_slider_option, "_on_HSlider_value_changed")
-		new_slider_option._slider.connect("value_changed", self, "_on_HSlider_value_changed", [new_slider_option])
-		_on_HSlider_value_changed(current_value, new_slider_option)
+		new_slider_option._slider.connect("value_changed", self, "_on_HSlider_value_changed", [new_slider_option, format])
+		_on_HSlider_value_changed(current_value, new_slider_option, format)
 	
 	new_slider_option.connect("value_changed", self, "signal_setting_changed", [config_key, mod_name])
 	
 	return new_slider_option
 
-func _on_HSlider_value_changed(value:float, component)->void :
-	component._value.text = "%.1f X" % value
+func _on_HSlider_value_changed(value:float, component, format)->void :
+	component._value.text = format % value
 	component.emit_signal("value_changed", value)
 	
 func _init_bool_button(parent:Node, mod_name:String, config_key:String, config_value:bool):
