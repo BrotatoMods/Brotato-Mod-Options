@@ -71,13 +71,11 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 			component.connect("mouse_exited", self, "on_mouse_exited", [component])
 
 func on_mouse_entered(component, tooltip) -> void:
-	print_debug("entering ", components_hovered)
 	components_hovered += 1
 	info_popup_container.show()
 	info_popup.display(component, Text.text(tooltip))
 	
 func on_mouse_exited(component) -> void:
-	print_debug("exiting ", components_hovered)
 	components_hovered -= 1
 	if components_hovered == 0:
 		info_popup_container.hide()
@@ -86,26 +84,30 @@ func _setup_float_slider(parent:Node, mod_name:String, mod_config:Dictionary, co
 	var min_value = min(config_value, 0.0)
 	var max_value = max(config_value, 1.0 if min_value == 0.0 else 0.0)
 	var step = 0.0
+	var format = "percent"
 	
 	if (
-		mod_config.keys().has(config_key + "_max")
+		mod_config.has(config_key + "_max")
 		and mod_config[config_key + "_max"] is float
 	):
 		max_value = mod_config[config_key + "_max"]
 	
 	if (
-		mod_config.keys().has(config_key + "_min")
+		mod_config.has(config_key + "_min")
 		and mod_config[config_key + "_min"] is float
 	):
 		min_value = mod_config[config_key + "_min"]
 	
 	if (
-		mod_config.keys().has(config_key + "_step")
+		mod_config.has(config_key + "_step")
 		and mod_config[config_key + "_step"] is float
 	):
 		step = mod_config[config_key + "_step"]
 	
-	return _init_float_slider(parent, config_value, min_value, max_value, step, config_key, mod_name)
+	if mod_config.has(config_key + "_format"):
+		format = mod_config[config_key + "_format"]
+	
+	return _init_float_slider(parent, config_value, min_value, max_value, step, config_key, mod_name, format)
 
 
 func _init_float_slider(
@@ -115,7 +117,8 @@ func _init_float_slider(
 	max_value:float,
 	step:float,
 	config_key:String,
-	mod_name:String
+	mod_name:String,
+	format:String
 ):
 	var new_slider_option = preload("res://ui/menus/global/slider_option.tscn").instance()
 	parent.add_child(new_slider_option)
@@ -132,11 +135,19 @@ func _init_float_slider(
 	
 	new_slider_option.set_value(current_value)
 	
+	if format != "percent":
+		new_slider_option._slider.disconnect("value_changed", new_slider_option, "_on_HSlider_value_changed")
+		new_slider_option._slider.connect("value_changed", self, "_on_HSlider_value_changed", [new_slider_option])
+		_on_HSlider_value_changed(current_value, new_slider_option)
+	
 	new_slider_option.connect("value_changed", self, "signal_setting_changed", [config_key, mod_name])
 	
 	return new_slider_option
 
-
+func _on_HSlider_value_changed(value:float, component)->void :
+	component._value.text = "%.1f X" % value
+	component.emit_signal("value_changed", value)
+	
 func _init_bool_button(parent:Node, mod_name:String, config_key:String, config_value:bool):
 	var new_bool_button = CheckButton.new()
 	parent.add_child(new_bool_button)

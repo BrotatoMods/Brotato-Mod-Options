@@ -69,6 +69,8 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 				result[key + "_min"] = value.minimum
 			if value.has("multipleOf"):
 				result[key + "_step"] = value.multipleOf
+			if value.has("format"):
+				result[key + "_format"] = value.format
 				
 		elif value.type == "boolean":
 			var default_boolean = false
