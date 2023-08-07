@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://resources/themes/base_theme.tres" type="Theme" id=1]
 [ext_resource path="res://mods-unpacked/dami-ModOptions/extensions/ui/menus/pages/menu_mods_options.gd" type="Script" id=2]
 [ext_resource path="res://ui/menus/global/my_menu_button.gd" type="Script" id=3]
 [ext_resource path="res://mods-unpacked/dami-ModOptions/extensions/ui/menus/pages/color_pickers_container.gd" type="Script" id=4]
 [ext_resource path="res://resources/fonts/actual/base/font_big_title.tres" type="DynamicFont" id=5]
+[ext_resource path="res://mods-unpacked/dami-ModOptions/tooltip/mod_options_popup.tscn" type="PackedScene" id=6]
 
 [node name="MenuModsOptions" type="VBoxContainer"]
 anchor_right = 1.0
@@ -21,6 +22,12 @@ margin_bottom = 79.0
 custom_fonts/font = ExtResource( 5 )
 text = "MENU_MOD_CONFIG"
 align = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 10
+visible = false
+
+[node name="InfoPopup" parent="CanvasLayer" instance=ExtResource( 6 )]
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 margin_left = 200.0

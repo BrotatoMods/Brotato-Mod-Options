@@ -54,10 +54,10 @@ mouse_default_cursor_shape = 13
 script = ExtResource( 4 )
 
 [node name="ColorPicker" type="ColorPicker" parent="Control"]
-margin_left = 19.0
-margin_top = 50.0
-margin_right = 624.0
-margin_bottom = 742.0
+margin_left = 23.0
+margin_top = 54.0
+margin_right = 628.0
+margin_bottom = 746.0
 rect_scale = Vector2( 0.65, 0.7 )
 mouse_filter = 0
 theme = ExtResource( 1 )
