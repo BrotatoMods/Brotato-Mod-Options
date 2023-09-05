@@ -1,7 +1,7 @@
 {
 	"name": "ModOptions",
 	"namespace": "dami",
-	"version_number": "0.4.0",
+	"version_number": "0.4.1",
 	"description": "Option menus for mods",
 	"website_url": "",
 	"dependencies": [],
