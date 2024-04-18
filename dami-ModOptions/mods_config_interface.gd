@@ -7,6 +7,7 @@ signal setting_changed(setting_name, value, mod_name)
 const LOG_NAME = "dami-ModOptions"
 
 var mod_configs := {}
+var override_configs := {}
 var color_regex := RegEx.new()
 
 const COLOR_HEX_EXPRESSION = "#?([a-fA-F0-9]{2}){3,4}"
@@ -22,6 +23,19 @@ func _ready():
 			load_legacy_config(mod)
 		else:
 			mod_configs[mod.dir_name] = flatten_properties(mod.manifest.config_schema.properties)
+		load_override_config(mod)
+
+func load_override_config(mod:ModData) -> void:
+	if !mod.configs.empty() and mod.configs.has("default"):
+		var current_config = mod_configs[mod.dir_name]
+		var override_config = mod.configs.override if mod.configs.has("override") else ModLoaderConfig.create_config(mod.dir_name, "override", mod.configs.default.data)
+		
+		for key in current_config:
+			var value = override_config.data.get(key)
+			if value != null and value != current_config[key]:
+				printerr(key)
+				on_setting_changed(key, value, mod.dir_name)
+		override_configs[mod.dir_name] = override_config
 
 func load_legacy_config(mod:ModData) -> void:
 	var manifest_path = mod.get_required_mod_file_path(mod.required_mod_files.MANIFEST)
@@ -41,11 +55,14 @@ func on_setting_changed(setting_name:String, value, mod_name:String):
 	var current_config = mod_configs[mod_name]
 	current_config[setting_name] = value
 	
+	if override_configs.has(mod_name):
+		var override_config = override_configs[mod_name]
+		override_config.data[setting_name] = value
+		ModLoaderConfig.update_config(override_config)
 #	TODO, something with this
 #	for mod in ModLoader.mod_load_order:
 #		if mod is ModData and mod.dir_name == mod_name:
 #			mod.config = current_config
-	
 	emit_signal("setting_changed", setting_name, value, mod_name)
 
 func flatten_properties(properties:Dictionary) -> Dictionary:
