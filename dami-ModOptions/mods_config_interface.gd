@@ -13,8 +13,8 @@ const COLOR_HEX_EXPRESSION = "#?([a-fA-F0-9]{2}){3,4}"
 
 func _ready():
 	ModLoaderLog.info("Loading mod configs", LOG_NAME)
-	color_regex.compile(COLOR_HEX_EXPRESSION)
-	var nb_configs := 0
+	var _err_regex_compile = color_regex.compile(COLOR_HEX_EXPRESSION)
+	var _nb_configs := 0
 	
 	for mod_id in ModLoaderStore.mod_data:
 		var mod = ModLoaderStore.mod_data[mod_id]

@@ -9,7 +9,7 @@ var dir = ""
 var ext_dir = ""
 var trans_dir = ""
 
-func _init(modLoader = ModLoader):
+func _init(_modLoader = ModLoader):
 	ModLoaderLog.info("Init", LOG_NAME)
 	dir = ModLoaderMod.get_unpacked_dir() + MOD_DIR
 	ext_dir = dir + "extensions/"

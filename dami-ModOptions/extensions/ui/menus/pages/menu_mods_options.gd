@@ -24,7 +24,7 @@ func _ready():
 	for mod_config_key in mod_configs.keys():
 		_init_mod_config_ui(mod_configs[mod_config_key], mod_config_key)
 	
-	connect("setting_changed", mods_config_interface, "on_setting_changed")
+	var _err_setting_changed = connect("setting_changed", mods_config_interface, "on_setting_changed")
 	
 func init():
 	$BackButton.grab_focus()
@@ -38,7 +38,7 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 	mod_list_vbox.move_child(mod_config_container, mod_list_vbox.get_child_count() - 2)
 	
 	var mod_config_label = Label.new()
-	mod_config_label.set("custom_fonts/font", preload("res://resources/fonts/actual/base/font_small_title.tres"))
+	mod_config_label.set("custom_fonts/font", preload("res://resources/fonts/actual/base/font_26_outline.tres"))
 	mod_config_label.text = mod_name
 	mod_config_label.align = ALIGN_END
 	mod_config_container.add_child(mod_config_label)
@@ -75,7 +75,7 @@ func on_mouse_entered(component, tooltip) -> void:
 	info_popup_container.show()
 	info_popup.display(component, Text.text(tooltip))
 	
-func on_mouse_exited(component) -> void:
+func on_mouse_exited(_component) -> void:
 	components_hovered -= 1
 	if components_hovered == 0:
 		info_popup_container.hide()

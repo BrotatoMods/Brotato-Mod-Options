@@ -2,7 +2,7 @@ extends Control
 
 
 func _ready():
-	connect("hide", self, "hide_children")
+	var _err_hide = connect("hide", self, "hide_children")
 
 func show_picker(picker:Control, picker_outline_rect:Vector2):
 	var _visible = picker.visible

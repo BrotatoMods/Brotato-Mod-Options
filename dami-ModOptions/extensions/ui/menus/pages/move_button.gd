@@ -7,7 +7,7 @@ var parent:Control
 func _ready():
 	parent = get_parent()
 
-func _process(delta):
+func _process(_delta):
 	if selected:
 		follow_mouse()
 
