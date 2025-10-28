@@ -1,4 +1,3 @@
-class_name ColorOption
 extends HBoxContainer
 
 signal color_changed(value)
