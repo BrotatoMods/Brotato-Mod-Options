@@ -1,5 +1,7 @@
 extends "res://ui/menus/title_screen/title_screen.gd"
 
+var option_tab = load("res://mods-unpacked/dami-ModOptions/mod_options_tab/mod_options_tab.tscn")
+
 # TODO move this file to what its actually extending
 onready var menu_options = $Menus/MenuOptions
 #onready var options_container = $Buttons/HBoxContainer2
@@ -14,8 +16,10 @@ func _ready():
 	var mod_options_button = accessibility_button.duplicate()
 	button_container.add_child_below_node(accessibility_button, mod_options_button)
 	mod_options_button.connect("pressed", button_controller, "_change_tab", [last_button_index])
+	mod_options_button.text = "Mods"
+	mod_options_button.icon = null
 	button_controller.buttons_tab_np.push_back(mod_options_button.get_path())
-
+	button_controller.tab_container.add_child(option_tab.instance())
 #	print_debug("we are extending!!!" , menu_options, " ", button_container)
 #	pass
 #	print_debug("var options? ", options_container)

@@ -1,18 +1,13 @@
-extends VBoxContainer
-
-
-signal back_button_pressed
+extends ScrollContainer
 
 signal setting_changed(setting_name, value, mod_name)
 
-onready var mod_list_vbox = $ScrollContainer / MarginContainer / VBoxContainer
+onready var mod_list_vbox = $VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer
 
-onready var color_pickers_container = $ColorPickersContainer
+onready var color_pickers_container = $VBoxContainer/ColorPickersContainer
 
-onready var default_button = $DefaultButton
-onready var back_button = $BackButton
-onready var info_popup_container = $CanvasLayer
-onready var info_popup = $CanvasLayer / InfoPopup
+onready var info_popup_container = $VBoxContainer/CanvasLayer
+onready var info_popup = $VBoxContainer/CanvasLayer/InfoPopup
 
 var mods_config_interface
 var components_hovered = 0
@@ -25,9 +20,7 @@ func _ready():
 		_init_mod_config_ui(mod_configs[mod_config_key], mod_config_key)
 	
 	var _err_setting_changed = connect("setting_changed", mods_config_interface, "on_setting_changed")
-	
-func init():
-	$BackButton.grab_focus()
+
 
 func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 	if mod_config.empty():return
@@ -40,7 +33,7 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 	var mod_config_label = Label.new()
 	mod_config_label.set("custom_fonts/font", preload("res://resources/fonts/actual/base/font_26_outline.tres"))
 	mod_config_label.text = mod_name
-	mod_config_label.align = ALIGN_END
+	mod_config_label.align = VBoxContainer.ALIGN_END
 	mod_config_container.add_child(mod_config_label)
 	
 	var mod_config_values_container = VBoxContainer.new()
@@ -129,8 +122,6 @@ func _init_float_slider(
 	
 	new_slider_option._label.text = config_key.to_upper()
 	
-	print_debug("new slider value, text: ", new_slider_option._label.text)
-	
 	new_slider_option._value.rect_min_size.x = 140
 	
 	new_slider_option.set_value(current_value)
@@ -182,10 +173,6 @@ func _init_color_picker_button(
 
 func signal_setting_changed(value, setting_name:String, mod_name:String):
 	emit_signal("setting_changed", setting_name, value, mod_name)
-
-
-func _on_BackButton_pressed():
-	emit_signal("back_button_pressed")
 
 
 func _on_DefaultButton_pressed():
