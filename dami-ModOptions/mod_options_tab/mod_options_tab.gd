@@ -158,7 +158,7 @@ func _init_color_picker_button(
 	config_value:String,
 	container:Node
 ):
-	var new_color_option = preload("res://mods-unpacked/dami-ModOptions/extensions/ui/menus/pages/color_option.tscn").instance()
+	var new_color_option = preload("res://mods-unpacked/dami-ModOptions/mod_options_tab/color_option.tscn").instance()
 	parent.add_child(new_color_option)
 	
 	new_color_option._label.text = config_key.to_upper()
