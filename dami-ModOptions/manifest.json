@@ -2,7 +2,7 @@
 	"name": "ModOptions",
 	"namespace": "dami",
 	"version_number": "0.6.0",
-	"description": "Option menus for mods",
+	"description": "Option menus for mods\n\nThis mod is a pure dependency mod. It does nothing on its own.",
 	"website_url": "https://github.com/BrotatoMods/Brotato-Mod-Options",
 	"dependencies": [
 
