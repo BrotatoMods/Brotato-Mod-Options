@@ -51,8 +51,14 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 			title.size_flags_horizontal = SIZE_EXPAND_FILL
 			component.add_child(title)
 
-		if config_value is float:
-
+		if config_key.begins_with("enum_"):
+			# Catch everything starting with enum.
+			# Without that the enum value can be recognized as one of the base types.
+			if config_key.ends_with("_options"):
+				var enum_value = mod_config[config_key.rstrip("_options")]
+				var enum_options: Array = mod_config[config_key]
+				_init_drop_down(component, mod_name, config_key, enum_value, enum_options)
+		elif config_value is float:
 			if (
 				not config_key.ends_with("_max")
 				and not config_key.ends_with("_min")
@@ -65,9 +71,6 @@ func _init_mod_config_ui(mod_config:Dictionary, mod_name:String):
 
 		elif config_value is String and mods_config_interface.is_color_string(config_value):
 			_init_color_picker_button(component, mod_name, config_key, config_value, color_pickers_container)
-
-		elif config_value is Array:
-			_init_drop_down(component, mod_name, config_key, config_value)
 
 		if component.get_child_count() > 0 and mod_config.keys().has(config_key + "_tooltip"):
 			component.connect("mouse_entered", self, "on_mouse_entered", [component, mod_config[config_key + "_tooltip"]])
@@ -187,15 +190,16 @@ func _init_color_picker_button(
 	return new_color_option
 
 
-func _init_drop_down(parent: Node, mod_name: String, config_key: String, config_value: Array):
+func _init_drop_down(parent: Node, mod_name: String, config_key: String, config_value, config_options: Array):
 	var new_drop_down = OptionButton.new()
 	parent.add_child(new_drop_down)
-	new_drop_down.selected = 0
 
-	for value in config_value:
-		new_drop_down.add_item(value)
+	for option in config_options:
+		new_drop_down.add_item(option)
 
-	new_drop_down.connect("item_selected", self, "signal_option_button_item_selected", [config_key, config_value, mod_name])
+	new_drop_down.selected = config_options.find(config_value)
+
+	new_drop_down.connect("item_selected", self, "signal_option_button_item_selected", [config_key.lstrip("enum_").rstrip("_options"), config_options, mod_name])
 
 	return new_drop_down
 

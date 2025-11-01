@@ -22,7 +22,7 @@ func _ready():
 		if mod.configs.empty():
 			load_legacy_config(mod)
 		else:
-			mod_configs[mod.dir_name] = flatten_properties(ModLoaderConfig.get_config_schema(mod_id).properties)
+			mod_configs[mod.dir_name] = flatten_properties(ModLoaderConfig.get_current_config(mod_id))
 
 
 func load_legacy_config(mod:ModData) -> void:
@@ -51,8 +51,10 @@ func on_setting_changed(setting_name:String, value, mod_name:String):
 	emit_signal("setting_changed", setting_name, value, mod_name)
 
 
-func flatten_properties(properties:Dictionary) -> Dictionary:
+func flatten_properties(config: ModConfig) -> Dictionary:
 	var result = {}
+	var properties: Dictionary = config.schema.properties
+	var config_data := config.data
 
 	for key in properties:
 		var value = properties[key]
@@ -61,11 +63,11 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 
 		if value.type == "object":
 			result.merge(flatten_properties(value.properties))
+		elif value.has("enum"):
+				result["enum_" + key] = config_data[key]
+				result["enum_" + key + "_options"] = value.enum
 		elif value.type == "number":
-			var default_number_value = 0.0
-			if value.has("default"):
-				default_number_value = value.default
-			result[key] = default_number_value
+			result[key] = config_data[key]
 			if value.has("maximum"):
 				result[key + "_max"] = value.maximum
 			if value.has("minimum"):
@@ -76,29 +78,21 @@ func flatten_properties(properties:Dictionary) -> Dictionary:
 				result[key + "_format"] = value.format
 
 		elif value.type == "boolean":
-			var default_boolean = false
-			if value.has("default"):
-				default_boolean = value.default
-			result[key] = default_boolean
+			result[key] = config_data[key]
 
 		elif value.type == "string":
 			if value.has("format") and value.format == "color":
-				var default_color = "#" + Color.white.to_html()
-				if value.has("default"):
-					default_color = value.default
-				result[key] = default_color
+				result[key] = config_data[key]
 			elif not value.has("enum"):
 				ModLoaderLog.warning(str("Unsupported string for key: ", key), LOG_NAME)
 		else:
 			ModLoaderLog.warning(str("Unsupported type for key: ", key), LOG_NAME)
 
-		if value.has("enum"):
-				result[key] = value.enum
-				if value.has("default"):
-					result[key + "_default"] = value.enum.find(value.default)
-
 		if value.has("title"):
-				result[key + "_title"] = value.title
+			# TODO: Figure something better out here
+			var key_prefix := "enum_" if value.has("enum") else ""
+			var key_suffix := "_options" if value.has("enum") else ""
+			result[ key_prefix + key + key_suffix + "_title"] = value.title
 
 	return result
 
