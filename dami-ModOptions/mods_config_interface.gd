@@ -22,7 +22,8 @@ func _ready():
 		if mod.configs.empty():
 			load_legacy_config(mod)
 		else:
-			mod_configs[mod.dir_name] = flatten_properties(ModLoaderConfig.get_current_config(mod_id))
+			var current_config := ModLoaderConfig.get_current_config(mod_id)
+			mod_configs[mod.dir_name] = flatten_properties(current_config if current_config else ModLoaderConfig.get_default_config(mod_id))
 
 
 func load_legacy_config(mod:ModData) -> void:
