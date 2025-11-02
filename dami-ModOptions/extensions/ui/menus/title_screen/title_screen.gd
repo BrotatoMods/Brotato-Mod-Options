@@ -20,3 +20,4 @@ func _ready():
 	mod_options_button.icon = preload("res://mods-unpacked/dami-ModOptions/assets/mods_icon.png")
 	button_controller.buttons_tab_np.push_back(mod_options_button.get_path())
 	button_controller.tab_container.add_child(option_tab.instance())
+	button_controller.buttons_tab.push_back(mod_options_button)
