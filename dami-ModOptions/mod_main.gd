@@ -14,14 +14,14 @@ func _init(_modLoader = ModLoader):
 	dir = ModLoaderMod.get_unpacked_dir() + MOD_DIR
 	ext_dir = dir + "extensions/"
 	trans_dir = dir + "translations/"
-	
+
 	# Add interface
 	_add_child_class()
-	
+
 	# Add extensions
 	ModLoaderMod.install_script_extension(ext_dir + "ui/menus/title_screen/title_screen.gd")
 	ModLoaderMod.install_script_extension(ext_dir + "ui/menus/ingame/pause_menu.gd")
-	
+
 	# Add localizations
 	ModLoaderMod.add_translation(trans_dir + "modoptions_translations.en.translation")
 	ModLoaderMod.add_translation(trans_dir + "modoptions_translations.fr.translation")
