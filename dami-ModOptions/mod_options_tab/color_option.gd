@@ -19,7 +19,7 @@ func _ready()->void :
 
 func set_container(p_container:Node):
 	container = p_container
-	
+
 	remove_child(_picker_control)
 	container.add_child(_picker_control)
 
